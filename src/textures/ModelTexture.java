@@ -4,9 +4,9 @@ public class ModelTexture {
 
 	private int textureID;
 	
-	public ModelTexture(int id){
+	public ModelTexture(int texture){
 		
-		this.textureID = id;
+		this.textureID = texture;
 		
 	}
 	

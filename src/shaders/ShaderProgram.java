@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.Vector;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -92,7 +91,7 @@ public abstract class ShaderProgram {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = reader.readLine()) != null){
-				shaderSource.append(line).append("\n");
+				shaderSource.append(line).append("//\n");
 			}
 			reader.close();
 		}catch(IOException e){
