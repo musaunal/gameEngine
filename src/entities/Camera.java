@@ -11,18 +11,18 @@ public class Camera {
 	private float roll;
 	
 	public void move(){
-		if (Keyboard.isKeyDown(Keyboard.KEY_W))
-			position.z -=0.2f;
-		if (Keyboard.isKeyDown(Keyboard.KEY_D))
-			position.x +=0.2f;
-		if (Keyboard.isKeyDown(Keyboard.KEY_A))
-			position.x -=0.2f;
-		if (Keyboard.isKeyDown(Keyboard.KEY_S))
-			position.z +=0.2f;
+		if (Keyboard.isKeyDown(Keyboard.KEY_8))
+			position.z -=2;
+		if (Keyboard.isKeyDown(Keyboard.KEY_6))
+			position.x +=2;
+		if (Keyboard.isKeyDown(Keyboard.KEY_4))
+			position.x -=2;
+		if (Keyboard.isKeyDown(Keyboard.KEY_2))
+			position.z +=2;
 		if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			position.y +=0.2f;
+			position.y +=2;
 		if (Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-			position.y -=0.2f;
+			position.y -=2;
 	}
 	
 	public Camera(){
