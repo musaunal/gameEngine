@@ -5,11 +5,11 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
 
-	private float distanceFromPlayer = 20;
+	private float distanceFromPlayer = 80;
 	private float angleAroundPlayer = 0;
 	
 	private Vector3f position = new Vector3f(0,0,0);
-	private float pitch = 30;    // kamera açýsý
+	private float pitch = 10;    // kamera açýsý
 	private float yaw = 0;
 	private float roll;
 	
