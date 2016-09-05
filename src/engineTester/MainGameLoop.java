@@ -44,16 +44,19 @@ public class MainGameLoop {
 		
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap")); 
 		
-		RawModel model = OBJLoader.loadObjModel("tree", loader); 
+		RawModel model = OBJLoader.loadObjModel("lowPolyTree", loader); 
 		
-		TexturedModel staticModel = new TexturedModel(model, new ModelTexture(loader.loadTexture("tree")));
+		TexturedModel staticModel = new TexturedModel(model, new ModelTexture(loader.loadTexture("lowPolyTree")));
+		
+		TexturedModel lamp = new TexturedModel (OBJLoader.loadObjModel("lamp", loader),
+				new ModelTexture(loader.loadTexture("lamp")));
 		
 		TexturedModel grass = new TexturedModel(OBJLoader.loadObjModel("grassModel", loader),
 				new ModelTexture(loader.loadTexture("grassTexture")));
 		TexturedModel flower = new TexturedModel(OBJLoader.loadObjModel("grassModel", loader),
 				new ModelTexture(loader.loadTexture("flower")));
-		TexturedModel bobble = new TexturedModel(OBJLoader.loadObjModel("lowPolyTree", loader),
-				new ModelTexture(loader.loadTexture("lowPolyTree")));
+		TexturedModel pine = new TexturedModel(OBJLoader.loadObjModel("pine", loader),
+				new ModelTexture(loader.loadTexture("pine")));
 	
 		ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("fern"));
 		fernTextureAtlas.setNumberOfRows(2);
@@ -66,6 +69,7 @@ public class MainGameLoop {
 		flower.getTexture().setHasTransparency(true);
 		flower.getTexture().setUseFakeLighting(true);
 		fern.getTexture().setHasTransparency(true);
+		lamp.getTexture().setUseFakeLighting(true);
 		
 		Terrain terrain = new Terrain(0, -1, loader , texturePack, blendMap , "heightMap");
 		
@@ -86,7 +90,7 @@ public class MainGameLoop {
 				float x = random.nextFloat() * 800 - 400 ;
 				float z = random.nextFloat()* -600;
 				float y = terrain.getHeightOfTerrain(x, z);
-				entities.add(new Entity(staticModel, new Vector3f(x ,y , z),0,0,0,random.nextFloat() * 1 + 4));
+				entities.add(new Entity(staticModel, new Vector3f(x ,y , z),0,0,0,random.nextFloat() * 1 + 1));
 				x = random.nextFloat() * 800 - 400;
 				z = random.nextFloat() * -600;
 				y = terrain.getHeightOfTerrain(x, z);
@@ -94,16 +98,20 @@ public class MainGameLoop {
 				x = random.nextFloat() * 800 - 400;
 				z = random.nextFloat() * -600;
 				y = terrain.getHeightOfTerrain(x, z);
-				entities.add(new Entity(bobble, new Vector3f(x,y ,z),0 ,random.nextFloat() * 360 ,0 ,random.nextFloat() * 0.1f + 0.6f));
+				entities.add(new Entity(pine, new Vector3f(x,y ,z),0 ,random.nextFloat() * 360 ,0 ,random.nextFloat() * 0.5f + 3.8f));
 			}
 		
 		}
 		
-		Light light = new Light(new Vector3f(0,10000,-7000), new Vector3f(1,1,1));
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(light);
-		lights.add(new Light(new Vector3f(-200,10,-200), new Vector3f(10,0,0)));
-		lights.add(new Light(new Vector3f(200,10,200), new Vector3f(0,0,10)));
+		lights.add(new Light(new Vector3f(0, 1000, -7000), new Vector3f(0.2f, 0.2f, 0.2f)));
+		lights.add(new Light(new Vector3f(185, 10, -293), new Vector3f(2,0,0), new Vector3f(1 ,0.01f , 0.002f)));
+		lights.add(new Light(new Vector3f(370, 17, -300), new Vector3f(0,2,2), new Vector3f(1 ,0.01f , 0.002f)));
+		lights.add(new Light(new Vector3f(293, 7, -305), new Vector3f(2,2,0), new Vector3f(1 ,0.01f , 0.002f)));
+		
+		entities.add(new Entity(lamp, new Vector3f(185, -4.7f , -293), 0, 0, 0, 1));
+		entities.add(new Entity(lamp, new Vector3f(370, 4.2f , -300), 0, 0, 0, 1));
+		entities.add(new Entity(lamp, new Vector3f(293, -6.8f , -305), 0, 0, 0, 1));
 		
 		//Terrain terrain2 = new Terrain(1, 0,loader, texturePack, blendMap , "heightMap");
 	
@@ -112,7 +120,7 @@ public class MainGameLoop {
 		RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
 		TexturedModel person = new TexturedModel(bunnyModel, new ModelTexture(loader.loadTexture("playerTexture")));
 		
-		Player player = new Player(person, new Vector3f(100, 5 , -150), 0, 0, 0, 1);
+		Player player = new Player(person, new Vector3f(153, 5 , -274), 0, 100, 0, 1);
 		
 		Camera camera = new Camera(player);
 		
