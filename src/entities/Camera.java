@@ -42,7 +42,11 @@ public class Camera {
 			position.y -=2;*/
 	}
 	
-	public Vector3f getPositon() {
+	public void invertPitch(){
+		this.pitch = -pitch;
+	}
+	
+	public Vector3f getPosition() {
 		return position;
 	}
 
