@@ -148,17 +148,12 @@ public class MainGameLoop {
 //		Entity lampEntity = (new Entity(lamp, new Vector3f(293, 7 ,-305),0,0,0,1 ));
 //		entities.add(lampEntity);
 		
+		WaterFrameBuffers buffers = new WaterFrameBuffers();
 		WaterShader waterShader  = new WaterShader();
-		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
+		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix() ,buffers);
 		List<WaterTile> waters = new ArrayList<WaterTile>();
 		WaterTile water = new WaterTile(100, 100, 0);
 		waters.add(water);
-		
-		WaterFrameBuffers fbos = new WaterFrameBuffers();
-		GuiTexture refraction = new GuiTexture(fbos.getRefractionTexture(), new Vector2f(0.5f ,0.5f), new Vector2f(0.25f ,0.25f));
-		GuiTexture reflection = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f ,0.5f), new Vector2f(0.25f ,0.25f));
-		guis.add(refraction);
-		guis.add(reflection);
 		
 		while (!Display.isCloseRequested()){
 			player.move(terrain);
@@ -167,7 +162,7 @@ public class MainGameLoop {
 
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			
-			fbos.bindReflectionFrameBuffer();
+			buffers.bindReflectionFrameBuffer();
 			float distance = 2* (camera.getPosition().y - water.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
@@ -175,11 +170,11 @@ public class MainGameLoop {
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
-			fbos.bindRefractionFrameBuffer();
+			buffers.bindRefractionFrameBuffer();
 			renderer.renderScene(entities, terrains, lights, camera ,new Vector4f(0, -1, 0 , water.getHeight()));
 			
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-			fbos.unbindCurrentFrameBuffer();
+			buffers.unbindCurrentFrameBuffer();
 			renderer.renderScene(entities, terrains, lights, camera,new Vector4f(0, 1, 0 ,10000));
 			waterRenderer.render(waters, camera);
 		
@@ -196,7 +191,7 @@ public class MainGameLoop {
 			DisplayManager.updateDisplay();	
 		}
 		
-		fbos.cleanUp();
+		buffers.cleanUp();
 		waterShader.cleanUP();
 		guiRenderer.cleanUP();
 		renderer.cleanUp();
