@@ -111,7 +111,7 @@ public class MainGameLoop {
 		
 		}
 		*/
-		Light sun = new Light(new Vector3f(0, 100, 0), new Vector3f(1.2f, 1.2f, 1.2f));
+		Light sun = new Light(new Vector3f(0, 50, 0), new Vector3f(1.2f, 1.2f, 1.2f));
 		List<Light> lights = new ArrayList<Light>();
 		//lights.add(new Light(new Vector3f(0, 1000, -7000), new Vector3f(1.2f, 1.2f, 1.2f)));
 		lights.add(new Light(new Vector3f(185, 10, -293), new Vector3f(2,0,0), new Vector3f(1 ,0.01f , 0.002f)));
@@ -167,7 +167,7 @@ public class MainGameLoop {
 			float distance = 2* (camera.getPosition().y - water.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(entities, terrains, lights, camera ,new Vector4f(0, 1, 0 , -water.getHeight()));
+			renderer.renderScene(entities, terrains, lights, camera ,new Vector4f(0, 1, 0 , -water.getHeight()+1));
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
