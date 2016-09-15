@@ -59,12 +59,15 @@ public class MasterRenderer {
 		return projectionMatrix;
 	}
 	
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights,
+	public void renderScene(List<Entity> entities, List<Entity> normalEntities, List<Terrain> terrains, List<Light> lights,
 			Camera camera ,Vector4f clipPlane ){
 		for(Terrain terrain : terrains){
 			processTerrrain(terrain);
 		}
 		for(Entity entity : entities){
+			processEntity(entity);
+		}
+		for(Entity entity : normalEntities){
 			processEntity(entity);
 		}
 		render(lights, camera ,clipPlane);
@@ -79,7 +82,7 @@ public class MasterRenderer {
 		shader.loadViewMatrix(camera);
 		renderer.render(entities);
 		shader.stop();
-		//normalMapRenderer.render(normalMapEntities, clipPlane, lights, camera);
+		normalMapRenderer.render(normalMapEntities, clipPlane, lights, camera);
 		terrainShader.start();
 		terrainShader.loadClipPlane(clipPlane); 
 		terrainShader.loadSkyColour(RED, GREEN, BLUE);

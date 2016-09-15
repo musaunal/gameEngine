@@ -9,12 +9,10 @@ import terrains.Terrain;
 
 public class Player extends Entity {
 
-	private static final float RUN_SPEED = 20;
+	private static final float RUN_SPEED = 40;
 	private static final float TURN_SPEED = 160;
 	private static final float GRAVITY = -50;
-	private static final float JUMP_POWER = 30;
-	
-	//private static final float TERRAÝN_HEIGHT = 0;
+	private static final float JUMP_POWER = 18;
 	
 	private float currentSpeed = 0;
 	private float currentTurnSpeed = 0;
@@ -34,9 +32,8 @@ public class Player extends Entity {
 		float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY())));
 		super.increasePosition(	dx, 0, dz);
 		upwardsSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-		super.increasePosition(0, upwardsSpeed * DisplayManager.getFrameTimeSeconds(), dz);
-		float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x, super.getPosition().z);
-		//System.out.println(terrainHeight);
+		super.increasePosition(0, upwardsSpeed * DisplayManager.getFrameTimeSeconds(), 0);
+		float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
 		if(super.getPosition().y < terrainHeight){
 			upwardsSpeed = 0;
 			isInAir = false;

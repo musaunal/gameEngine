@@ -12,12 +12,12 @@ import models.RawModel;
 import renderEngine.Loader;
 import toolBox.Maths;
 
-public class guiRenderer {
+public class GuiRenderer {
 
 	private final RawModel quad;
 	private GuiShader shader;
 	
-	public guiRenderer(Loader loader){
+	public GuiRenderer(Loader loader){
 		float[] positions = {-1 ,1 ,-1 ,-1 ,1 ,1 ,1 ,-1};
 		quad = loader.loadToVao(positions, 2);
 		shader = new GuiShader();
