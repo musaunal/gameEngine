@@ -69,7 +69,7 @@ public class SkyBoxRenderer {
 	float time = 0;
 	
 	public SkyBoxRenderer(Loader loader, Matrix4f projectionMatrix){
-		cube = loader.loadToVao(VERTICES, 3);
+		cube = loader.loadToVAO(VERTICES, 3);
 		texture = loader.loadCubeMap(TEXTURE_FÝLES);
 		nightTexture = loader.loadCubeMap(NIGHT_TEXTURE_FILES);
 		shader = new SkyboxShader();
@@ -94,7 +94,7 @@ public class SkyBoxRenderer {
 	}
 	
 	private void bindTextures(){
-		time += DisplayManager.getFrameTimeSeconds() * 100;   // day night parametresi
+		time += DisplayManager.getFrameTimeSeconds() * 1000;   // day night parametresi
 		time %= 24000;
 		int texture1;
 		int texture2;

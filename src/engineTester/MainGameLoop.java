@@ -1,10 +1,12 @@
 package engineTester;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -16,12 +18,18 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
-import guis.GuiTexture;
+import fontMeshCreator.FontType;
+import fontMeshCreator.GUIText;
+import fontRendering.TextMaster;
 import guis.GuiRenderer;
+import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 import normalMappingObjConverter.NormalMappedObjLoader;
 import objConverter.OBJFileLoader;
+import particles.Particle;
+import particles.ParticleMaster;
+import particles.ParticleSystem;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -41,7 +49,14 @@ public class MainGameLoop {
 	public static void main(String[] args) {
 		
 		DisplayManager.createDisplay();
-		Loader loader = new Loader();	
+		Loader loader = new Loader();
+		TextMaster.init(loader);
+		MasterRenderer renderer = new MasterRenderer(loader);
+		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		
+		FontType font = new FontType(loader.loadTexture("candara"), new File("res/candara.fnt"));
+		GUIText text = new GUIText("WELCOME TO MY GAME", 2f, font, new Vector2f(0, 0.12f), 1f, true);
+		text.setColour(0.1f, 0.1f, 0.1f);
 		
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grassy2")); 
 		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("mud")); 
@@ -49,7 +64,6 @@ public class MainGameLoop {
 		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("path")); 
 		
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
-		
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap")); 
 		
 		TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
@@ -139,7 +153,7 @@ public class MainGameLoop {
 		Light sun = new Light(new Vector3f(10000, 10000, -10000), new Vector3f(1.3f, 1.3f, 1.3f));
 		lights.add(sun);
 	
-		MasterRenderer renderer = new MasterRenderer(loader);
+	
 		
 		RawModel Person = OBJLoader.loadObjModel("person", loader);
 		TexturedModel person = new TexturedModel(Person, new ModelTexture(loader.loadTexture("playerTexture")));
@@ -162,12 +176,19 @@ public class MainGameLoop {
 		WaterTile water = new WaterTile(75, -75, 0);
 		waters.add(water);
 		
+		ParticleSystem systemo = new ParticleSystem(50, 25, 0.3f, 4);
+		
 		// game loop
 		
 		while (!Display.isCloseRequested()){
 			player.move(terrain);
 			camera.move();
 			picker.update();
+			
+			systemo.generateParticles(player.getPosition());
+			
+			ParticleMaster.update();
+			
 			entity.increaseRotation(0, 1, 0);
 			entity2.increaseRotation(0, 1, 0);
 			entity3.increaseRotation(0, 1, 0);
@@ -191,11 +212,17 @@ public class MainGameLoop {
 			buffers.unbindCurrentFrameBuffer();
 			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,new Vector4f(0, -1, 0 ,100000));
 			waterRenderer.render(waters, camera ,sun);
+			
+			ParticleMaster.renderParticles(camera);
+			
 			guiRenderer.render(guis);
+			TextMaster.render();
 		
 			DisplayManager.updateDisplay();	
 		}
 		
+		ParticleMaster.cleanUp();
+		TextMaster.cleanUp();
 		buffers.cleanUp();
 		waterShader.cleanUP();
 		guiRenderer.cleanUP();
