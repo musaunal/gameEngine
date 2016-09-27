@@ -1,8 +1,10 @@
 package particles;
 
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
@@ -29,27 +31,23 @@ public class ParticleRenderer {
 		
 	}
 	
-	protected void render(List<Particle> particles, Camera camera){
+	protected void render(Map<ParticleTexture, List<Particle>> particles, Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 		prepare();
-		for(Particle particle : particles){
-			updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMatrix);
-			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+		for(ParticleTexture texture : particles.keySet()){
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
+			for(Particle particle : particles.get(texture)){
+				updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(),
+						viewMatrix);
+				shader.loadTextureCoordInfo(particle.getTexOffset1(), particle.getTexOffset2(), texture.getNumberOfRows(), 
+						particle.getBlend());
+				GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+			}
 		}
 		finishRendering();
 	}
-
-	//The code below is for the updateModelViewMatrix() method
-	//modelMatrix.m00 = viewMatrix.m00;
-	//modelMatrix.m01 = viewMatrix.m10;
-	//modelMatrix.m02 = viewMatrix.m20;
-	//modelMatrix.m10 = viewMatrix.m01;
-	//modelMatrix.m11 = viewMatrix.m11;
-	//modelMatrix.m12 = viewMatrix.m21;
-	//modelMatrix.m20 = viewMatrix.m02;
-	//modelMatrix.m21 = viewMatrix.m12;
-	//modelMatrix.m22 = viewMatrix.m22;
-
+	
 	protected void cleanUp(){
 		shader.cleanUP();
 	}
