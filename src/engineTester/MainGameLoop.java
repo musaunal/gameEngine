@@ -178,12 +178,12 @@ public class MainGameLoop {
 		waters.add(water);
 		
 		
-		ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("particleAtlas"), 4);
+		ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("fire"), 8, false);
 		
-		ParticleSystem systemo = new ParticleSystem(particleTexture, 40, 10, 0.1f, 1, 1.6f);
+		ParticleSystem systemo = new ParticleSystem(particleTexture, 500, 0.3f, -0.01f, 3, 1600);
 		systemo.setLifeError(0.1f);
 		systemo.setSpeedError(0.25f);
-		systemo.setScaleError(0.5f);
+		//systemo.setScaleError(0.5f);
 		systemo.randomizeRotation();
 		
 		// game loop
@@ -193,7 +193,7 @@ public class MainGameLoop {
 			camera.move();
 			picker.update();
 			
-			systemo.generateParticles(new Vector3f(player.getPosition()));
+			systemo.generateParticles(new Vector3f(player.getPosition().x, player.getPosition().y+5, player.getPosition().z));
 			
 			ParticleMaster.update(camera);
 			

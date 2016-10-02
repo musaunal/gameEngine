@@ -17,8 +17,8 @@ public class ParticleMaster {
 	private static Map<ParticleTexture, List<Particle>> particles = new HashMap<ParticleTexture, List<Particle>>();
 	private static ParticleRenderer renderer;
 	
-	public static void init (Loader loader , Matrix4f projectionMAtrix){
-		renderer = new  ParticleRenderer(loader, projectionMAtrix);
+	public static void init (Loader loader , Matrix4f projectionMatrix){
+		renderer = new  ParticleRenderer(loader, projectionMatrix);
 	}
 	
 	public static void update(Camera camera){

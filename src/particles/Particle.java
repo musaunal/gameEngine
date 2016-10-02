@@ -37,35 +37,35 @@ public class Particle {
 		ParticleMaster.addParticle(this);
 	}
 
-	public float getDistance() {
+	protected float getDistance() {
 		return distance;
 	} 
 
-	public Vector2f getTexOffset1() {
+	protected Vector2f getTexOffset1() {
 		return texOffset1;
 	}
 
-	public Vector2f getTexOffset2() {
+	protected Vector2f getTexOffset2() {
 		return texOffset2;
 	}
 
-	public float getBlend() {
+	protected float getBlend() {
 		return blend;
 	}
 
-	public ParticleTexture getTexture() {
+	protected ParticleTexture getTexture() {
 		return texture;
 	}
 
-	public Vector3f getPosition() {
+	protected Vector3f getPosition() {
 		return position;
 	}
 
-	public float getRotation() {
+	protected float getRotation() {
 		return rotation;
 	}
 
-	public float getScale() {
+	protected float getScale() {
 		return scale;
 	}
 	
@@ -75,8 +75,8 @@ public class Particle {
 		Vector3f change = new Vector3f(velocity);
 		change.scale(DisplayManager.getFrameTimeSeconds());
 		Vector3f.add(change, position, position);
-		distance = Vector3f.sub(camera.getPosition(), position, null).lengthSquared();
 		updateTextureCoordsInfo();
+		distance = Vector3f.sub(camera.getPosition(), position, null).lengthSquared();
 		elapsedTime += DisplayManager.getFrameTimeSeconds();
 		return elapsedTime < lifeLenght;
 	}
