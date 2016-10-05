@@ -67,7 +67,7 @@ public class MainGameLoop {
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap")); 
 		
-		TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
+		/*TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
 				new ModelTexture(loader.loadTexture("rocks")));
 		
 		ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("fern"));
@@ -80,20 +80,20 @@ public class MainGameLoop {
 		bobble.getTexture().setHasTransparency(true);
 
 		fern.getTexture().setHasTransparency(true);
-
-		Terrain terrain = new Terrain(0, -1, loader , texturePack, blendMap , "heightMap");
+*/
+		Terrain terrain = new Terrain(1, 0, loader , texturePack, blendMap , "heightMap");
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		terrains.add(terrain);
 		
-		TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
+		/*TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
 				new ModelTexture(loader.loadTexture("lamp")));
 		lamp.getTexture().setUseFakeLighting(true);
-		
+		*/
 		List<Entity> entities = new ArrayList<Entity>();
 		List<Entity> normalMapEntities = new ArrayList<Entity>();
 	
 		//NormalMap models
-		
+		/*
 		TexturedModel barrelModel = new TexturedModel(NormalMappedObjLoader.loadOBJ("barrel", loader), 
 				new ModelTexture(loader.loadTexture("barrel")));
 		barrelModel.getTexture().setNormalMap(loader.loadTexture("barrelNormal"));
@@ -111,10 +111,10 @@ public class MainGameLoop {
 		boulderModel.getTexture().setNormalMap(loader.loadTexture("boulderNormal"));
 		boulderModel.getTexture().setShineDamper(10);
 		boulderModel.getTexture().setReflectivity(0.5f);
-		
+		*/
 		//Entites
 		
-		Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
+	/*	Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
 		Entity entity2 = new Entity(boulderModel, new Vector3f(85, 10, -75), 0, 0, 0, 1f);
 		Entity entity3 = new Entity(crateModel, new Vector3f(65, 10, -75), 0, 0, 0, 0.04f);
 		normalMapEntities.add(entity);
@@ -148,7 +148,7 @@ public class MainGameLoop {
 			}
 		}
 		entities.add(new Entity(rocks, new Vector3f(75, 4.6f, -75), 0, 0, 0, 75));
-		
+		*/
 		//other setup
 		List<Light> lights = new ArrayList<Light>();
 		Light sun = new Light(new Vector3f(10000, 10000, -10000), new Vector3f(1.3f, 1.3f, 1.3f));
@@ -159,7 +159,7 @@ public class MainGameLoop {
 		RawModel Person = OBJLoader.loadObjModel("person", loader);
 		TexturedModel person = new TexturedModel(Person, new ModelTexture(loader.loadTexture("playerTexture")));
 		
-		Player player = new Player(person, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
+		Player player = new Player(person, new Vector3f(1000, 50, 250), 0, 45, 0, 0.6f);
 		entities.add(player);
 		Camera camera = new Camera(player);
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
@@ -174,19 +174,22 @@ public class MainGameLoop {
 		WaterShader waterShader  = new WaterShader();
 		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix() ,buffers);
 		List<WaterTile> waters = new ArrayList<WaterTile>();
-		WaterTile water = new WaterTile(75, -75, 0);
+		WaterTile water = new WaterTile(1200, 400, 0);			// koordinatý suyun merkezine ait
 		waters.add(water);
 		
 		
-		ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("fire"), 8, false);
+		ParticleTexture cosmic = new ParticleTexture(loader.loadTexture("cosmic"), 4, false);
+		ParticleTexture fire = new ParticleTexture(loader.loadTexture("fire"), 8, true);
 		
-		ParticleSystem systemo = new ParticleSystem(particleTexture, 500, 0.3f, -0.01f, 3, 1600);
+		ParticleSystem firee = new ParticleSystem(fire, 500, 0.9f, -0.03f, 4, 5);
+		firee.setScaleError(0.5f);
+		ParticleSystem systemo = new ParticleSystem(cosmic, 50, 5, 0.1f, 3, 0.6f);
 		systemo.setLifeError(0.1f);
 		systemo.setSpeedError(0.25f);
-		//systemo.setScaleError(0.5f);
+		systemo.setScaleError(0.5f);
 		systemo.randomizeRotation();
 		
-		// game loop
+		 //game loop
 		
 		while (!Display.isCloseRequested()){
 			player.move(terrain);
@@ -194,14 +197,16 @@ public class MainGameLoop {
 			picker.update();
 			
 			systemo.generateParticles(new Vector3f(player.getPosition().x, player.getPosition().y+5, player.getPosition().z));
+			firee.generateParticles(new Vector3f(1000, 8, 250));
+			
 			
 			ParticleMaster.update(camera);
-			
+		/*		
 			entity.increaseRotation(0, 1, 0);
 			entity2.increaseRotation(0, 1, 0);
 			entity3.increaseRotation(0, 1, 0);
+		*/	
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-			
 			//render reflection texture
 			buffers.bindReflectionFrameBuffer();
 			float distance = 2* (camera.getPosition().y - water.getHeight());

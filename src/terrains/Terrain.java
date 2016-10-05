@@ -72,7 +72,6 @@ public class Terrain {
 		int gridX = (int) Math.floor(terrainX / gridSquareSize);
 		int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
 		if(gridX >= heights.length -1 || gridZ >= heights.length -1 || gridX < 0 || gridZ < 0){
-		//System.out.println("çalýþ");
 			return 0;
 		}
 		float xCoord = (terrainX % gridSquareSize)/gridSquareSize;

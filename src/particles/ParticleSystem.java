@@ -1,3 +1,4 @@
+
 package particles;
 
 import java.util.Random;
@@ -16,9 +17,9 @@ public class ParticleSystem {
 	private boolean randomRotation = false;
 	private Vector3f direction;
 	private float directionDeviation = 0;
-
-	private ParticleTexture texture;
 	
+	private ParticleTexture texture;
+
 	private Random random = new Random();
 
 	public ParticleSystem(ParticleTexture texture, float pps, float speed, float gravityComplient, float lifeLength, float scale) {
@@ -91,7 +92,7 @@ public class ParticleSystem {
 		velocity.scale(generateValue(averageSpeed, speedError));
 		float scale = generateValue(averageScale, scaleError);
 		float lifeLength = generateValue(averageLifeLength, lifeError);
-		new Particle(texture ,new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale);
+		new Particle(texture, new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale);
 	}
 
 	private float generateValue(float average, float errorMargin) {

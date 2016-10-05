@@ -69,7 +69,7 @@ public class Loader {
 		return vbo;
 	}
 	
-	public void addInstanceAttribute(int vao, int vbo , int attribute , 
+	public void addInstancedAttribute(int vao, int vbo , int attribute , 
 			int dataSize ,int instancedDataLength ,int offset)
 	{
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);

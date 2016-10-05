@@ -17,8 +17,6 @@ import textures.ModelTexture;
 import toolBox.Maths;
 
 public class EntityRenderer {
-
-
 	
 	private StaticShader shader;
 	

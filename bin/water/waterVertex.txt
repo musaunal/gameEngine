@@ -13,7 +13,7 @@ uniform mat4 modelMatrix;
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 
-const float tiling = 4.0;
+const float tiling = 40;   // water size ýn 10 da 1 yeterli 
 
 void main(void) {
 
