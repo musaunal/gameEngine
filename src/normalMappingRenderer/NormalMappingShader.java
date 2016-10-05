@@ -73,9 +73,9 @@ public class NormalMappingShader extends ShaderProgram{
 		super.loadInt(location_normalMap, 1);
 	}
 	
-	//protected void loadClipPlane(Vector4f plane){
-//		super.loadVector(location_plane, plane);
-//	}
+	protected void loadClipPlane(Vector4f plane){
+		super.loadVector(location_plane, plane);
+	}
 	
 	protected void loadNumberOfRows(int numberOfRows){
 		super.loadFloat(location_numberOfRows, numberOfRows);

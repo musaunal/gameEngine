@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -27,7 +26,6 @@ import models.RawModel;
 import models.TexturedModel;
 import normalMappingObjConverter.NormalMappedObjLoader;
 import objConverter.OBJFileLoader;
-import particles.Particle;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
@@ -67,33 +65,31 @@ public class MainGameLoop {
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap")); 
 		
-		/*TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
-				new ModelTexture(loader.loadTexture("rocks")));
-		
 		ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("fern"));
 		fernTextureAtlas.setNumberOfRows(2);
 		
 		TexturedModel fern = new TexturedModel(OBJFileLoader.loadOBJ("fern", loader),fernTextureAtlas);
 		
+		fern.getTexture().setHasTransparency(true);
+		
 		TexturedModel bobble = new TexturedModel(OBJFileLoader.loadOBJ("pine", loader),
 				new ModelTexture(loader.loadTexture("pine")));
 		bobble.getTexture().setHasTransparency(true);
 
-		fern.getTexture().setHasTransparency(true);
-*/
 		Terrain terrain = new Terrain(1, 0, loader , texturePack, blendMap , "heightMap");
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		terrains.add(terrain);
 		
-		/*TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
+		TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
 				new ModelTexture(loader.loadTexture("lamp")));
 		lamp.getTexture().setUseFakeLighting(true);
-		*/
+		
 		List<Entity> entities = new ArrayList<Entity>();
 		List<Entity> normalMapEntities = new ArrayList<Entity>();
 	
 		//NormalMap models
-		/*
+		
+		
 		TexturedModel barrelModel = new TexturedModel(NormalMappedObjLoader.loadOBJ("barrel", loader), 
 				new ModelTexture(loader.loadTexture("barrel")));
 		barrelModel.getTexture().setNormalMap(loader.loadTexture("barrelNormal"));
@@ -111,55 +107,58 @@ public class MainGameLoop {
 		boulderModel.getTexture().setNormalMap(loader.loadTexture("boulderNormal"));
 		boulderModel.getTexture().setShineDamper(10);
 		boulderModel.getTexture().setReflectivity(0.5f);
-		*/
+	
 		//Entites
 		
-	/*	Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
-		Entity entity2 = new Entity(boulderModel, new Vector3f(85, 10, -75), 0, 0, 0, 1f);
-		Entity entity3 = new Entity(crateModel, new Vector3f(65, 10, -75), 0, 0, 0, 0.04f);
+		Entity entity = new Entity(barrelModel, new Vector3f(875, 40, 75), 0, 0, 0, 1f);
+		Entity entity2 = new Entity(boulderModel, new Vector3f(885, 40, 75), 0, 0, 0, 1f);
+		Entity entity3 = new Entity(crateModel, new Vector3f(865, 40, 75), 0, 0, 0, 0.04f);
 		normalMapEntities.add(entity);
 		normalMapEntities.add(entity2);
 		normalMapEntities.add(entity3);
 		
 		Random random = new Random(5666778);
-		for (int i = 0; i < 60; i++) {
+		for (int i = 0; i < 250; i++) {
 			if (i % 3 == 0) {
-				float x = random.nextFloat() * 150;
-				float z = random.nextFloat() * -150;
-				if ((x > 50 && x < 100) || (z < -50 && z > -100)) {
-				} else {
+				float x = random.nextFloat() * 1000 + 800;
+				float z = random.nextFloat() * 1000;
+				if ((x > 800 && x < 1600) && (z > 0 && z < 800)) {
+				
 					float y = terrain.getHeightOfTerrain(x, z);
-
-					entities.add(new Entity(fern, 3, new Vector3f(x, y, z), 0,
-							random.nextFloat() * 360, 0, 0.9f));
+					if(y>0){
+						entities.add(new Entity(fern, 3, new Vector3f(x, y, z), 0,random.nextFloat() * 360, 0, 0.9f));
+					}
+					
 				}
 			}
 			if (i % 2 == 0) {
 
-				float x = random.nextFloat() * 150;
-				float z = random.nextFloat() * -150;
-				if ((x > 50 && x < 100) || (z < -50 && z > -100)) {
+				float x = random.nextFloat() * 1000 + 800;
+				float z = random.nextFloat() * 1000;
+				if ((x > 800 && x < 1600) && (z >0 && z < 800)) {
 
-				} else {
 					float y = terrain.getHeightOfTerrain(x, z);
-					entities.add(new Entity(bobble, 1, new Vector3f(x, y, z), 0,
-							random.nextFloat() * 360, 0, random.nextFloat() * 0.6f + 0.8f));
+					if(y>0){
+					entities.add(new Entity(bobble, 1, new Vector3f(x, y, z), 0,random.nextFloat() * 360, 0, random.nextFloat() * 0.6f + 0.8f));
+					}
 				}
 			}
 		}
-		entities.add(new Entity(rocks, new Vector3f(75, 4.6f, -75), 0, 0, 0, 75));
-		*/
+		
+		entities.add(new Entity(lamp, new Vector3f(1250, 20, 250), 0, 0, 0, 3));
+		
 		//other setup
 		List<Light> lights = new ArrayList<Light>();
 		Light sun = new Light(new Vector3f(10000, 10000, -10000), new Vector3f(1.3f, 1.3f, 1.3f));
 		lights.add(sun);
 	
-	
+		Light lamba = new Light(new Vector3f(1250, 60, 250), new Vector3f(1, 0, 0),new Vector3f(1, 0, 0));
+		lights.add(lamba);
 		
 		RawModel Person = OBJLoader.loadObjModel("person", loader);
 		TexturedModel person = new TexturedModel(Person, new ModelTexture(loader.loadTexture("playerTexture")));
 		
-		Player player = new Player(person, new Vector3f(1000, 50, 250), 0, 45, 0, 0.6f);
+		Player player = new Player(person, new Vector3f(1000, 50, 250), 0, 0, 0, 0.6f);
 		entities.add(player);
 		Camera camera = new Camera(player);
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
@@ -198,7 +197,6 @@ public class MainGameLoop {
 			
 			systemo.generateParticles(new Vector3f(player.getPosition().x, player.getPosition().y+5, player.getPosition().z));
 			firee.generateParticles(new Vector3f(1000, 8, 250));
-			
 			
 			ParticleMaster.update(camera);
 		/*		
