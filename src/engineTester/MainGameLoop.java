@@ -1,7 +1,5 @@
 package engineTester;
 
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,11 +22,14 @@ import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
+import multi.GameSocket;
 import normalMappingObjConverter.NormalMappedObjLoader;
 import objConverter.OBJFileLoader;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
+import postProcessing.Fbo;
+import postProcessing.PostProcessing;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -45,7 +46,20 @@ import water.WaterTile;
 
 public class MainGameLoop {
 
+	public static GameSocket GSocket;
+	public static Player player;
+	public static Entity entityLamp ;
+	public static int a = 1;
+	
+	
 	public static void main(String[] args) {
+		
+		try {
+			GSocket = new GameSocket("http://192.168.2.105:3000");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
@@ -54,13 +68,13 @@ public class MainGameLoop {
 		RawModel Person = OBJLoader.loadObjModel("person", loader);
 		TexturedModel person = new TexturedModel(Person, new ModelTexture(loader.loadTexture("playerTexture")));
 		
-		Player player = new Player(person, new Vector3f(1000, 50, 250), 0, 0, 0, 0.6f);
+		player = new Player(person, new Vector3f(1000, 50, 250), 0, 0, 0, 0.6f);
 		Camera camera = new Camera(player);
 		
 		MasterRenderer renderer = new MasterRenderer(loader,camera);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
 		
-		FontType font = new FontType(loader.loadTexture("candara"), new File("res/candara.fnt"));
+		FontType font = new FontType(loader.loadTexture("candara"), "candara");
 		GUIText text = new GUIText("WELCOME TO MY GAME", 2f, font, new Vector2f(0, 0.12f), 1f, true);
 		text.setColour(0.1f, 0.1f, 0.1f);
 		
@@ -87,9 +101,9 @@ public class MainGameLoop {
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		terrains.add(terrain);
 		
-		TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp", loader),
-				new ModelTexture(loader.loadTexture("lamp")));
-		lamp.getTexture().setUseFakeLighting(true);
+		RawModel lampmodel = OBJLoader.loadObjModel("person", loader);
+		TexturedModel lamp = new TexturedModel(lampmodel, new ModelTexture(loader.loadTexture("playerTexture")));
+		entityLamp = new Entity(lamp, new Vector3f(1000, 10, 230), 0, 0, 0, 0.6f);
 		
 		List<Entity> entities = new ArrayList<Entity>();
 		List<Entity> normalMapEntities = new ArrayList<Entity>();
@@ -152,7 +166,9 @@ public class MainGameLoop {
 			}
 		}
 		
-		entities.add(new Entity(lamp, new Vector3f(1250, 20, 250), 0, 0, 0, 3));
+		
+		
+		entities.add(entityLamp);
 		entities.add(player);
 		
 		//other setup
@@ -195,6 +211,9 @@ public class MainGameLoop {
 		systemo.setScaleError(0.5f);
 		systemo.randomizeRotation();
 		
+		Fbo fbo = new Fbo(Display.getHeight(),Display.getHeight(),Fbo.DEPTH_RENDER_BUFFER);
+		PostProcessing.init(loader);
+		
 		 //game loop
 		
 		while (!Display.isCloseRequested()){
@@ -231,10 +250,13 @@ public class MainGameLoop {
 			//render to screen
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
+			
+			fbo.bindFrameBuffer();
 			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,new Vector4f(0, -1, 0 ,100000));
 			waterRenderer.render(waters, camera ,sun);
-			
 			ParticleMaster.renderParticles(camera);
+			fbo.unbindFrameBuffer();
+			PostProcessing.doPostProcessing(fbo.getColourTexture());
 			
 			guiRenderer.render(guis);
 			TextMaster.render();
@@ -242,6 +264,10 @@ public class MainGameLoop {
 			DisplayManager.updateDisplay();	
 		}
 		
+		
+		GSocket.socket.disconnect();
+		PostProcessing.cleanUp();
+		fbo.cleanUp();
 		ParticleMaster.cleanUp();
 		TextMaster.cleanUp();
 		buffers.cleanUp();

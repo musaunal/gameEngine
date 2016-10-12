@@ -93,12 +93,12 @@ public class Terrain {
 
 	private RawModel generateTerrain(Loader loader , String heightMap){
 		
-		BufferedImage image = null;
+	/*	BufferedImage image = null;
 		try {
 			image = ImageIO.read(new File("res/"+ heightMap +".png"));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		int VERTEX_COUNT = 128;
 		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
