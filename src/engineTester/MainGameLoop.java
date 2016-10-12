@@ -54,13 +54,12 @@ public class MainGameLoop {
 	
 	public static void main(String[] args) {
 		
-		try {
+	/*	try {
 			GSocket = new GameSocket("http://192.168.2.105:3000");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	*/	
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
 		TextMaster.init(loader);
@@ -211,7 +210,8 @@ public class MainGameLoop {
 		systemo.setScaleError(0.5f);
 		systemo.randomizeRotation();
 		
-		Fbo fbo = new Fbo(Display.getHeight(),Display.getHeight(),Fbo.DEPTH_RENDER_BUFFER);
+		Fbo multisapleFbo = new Fbo(Display.getHeight(),Display.getHeight());
+		Fbo outputFbo = new Fbo(Display.getHeight(),Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		PostProcessing.init(loader);
 		
 		 //game loop
@@ -222,7 +222,7 @@ public class MainGameLoop {
 			picker.update();
 			
 			systemo.generateParticles(new Vector3f(player.getPosition().x, player.getPosition().y+5, player.getPosition().z));
-			firee.generateParticles(new Vector3f(1000, 8, 250));
+			firee.generateParticles(new Vector3f(1200, 20, 250));
 			
 			ParticleMaster.update(camera);
 				
@@ -251,12 +251,13 @@ public class MainGameLoop {
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
 			
-			fbo.bindFrameBuffer();
+			//multisapleFbo.bindFrameBuffer();
 			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,new Vector4f(0, -1, 0 ,100000));
 			waterRenderer.render(waters, camera ,sun);
 			ParticleMaster.renderParticles(camera);
-			fbo.unbindFrameBuffer();
-			PostProcessing.doPostProcessing(fbo.getColourTexture());
+			multisapleFbo.unbindFrameBuffer();
+			multisapleFbo.resolveToScreen();
+			//PostProcessing.doPostProcessing(outputFbo.getColourTexture());
 			
 			guiRenderer.render(guis);
 			TextMaster.render();
@@ -265,9 +266,10 @@ public class MainGameLoop {
 		}
 		
 		
-		GSocket.socket.disconnect();
+		//GSocket.socket.disconnect();
 		PostProcessing.cleanUp();
-		fbo.cleanUp();
+		outputFbo.cleanUp();
+		multisapleFbo.cleanUp();
 		ParticleMaster.cleanUp();
 		TextMaster.cleanUp();
 		buffers.cleanUp();

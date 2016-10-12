@@ -1,31 +1,45 @@
 package postProcessing;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import gaussianBlur.HorizontalBlur;
+import gaussianBlur.VerticalBlur;
 import models.RawModel;
 import renderEngine.Loader;
 
 public class PostProcessing {
 	
+	
 	private static final float[] POSITIONS = { -1, 1, -1, -1, 1, 1, 1, -1 };	
 	private static RawModel quad;
 	private static ContrastChanger contrastChanger;
-
+	private static HorizontalBlur hBlur;
+	private static VerticalBlur vBlur;
+	
+	
 	public static void init(Loader loader){
 		quad = loader.loadToVAO(POSITIONS, 2);
 		contrastChanger = new ContrastChanger();
+		hBlur = new HorizontalBlur(Display.getWidth()/4, Display.getHeight()/4);   // ne kadar bölersen o kadar bulanýk
+		vBlur = new VerticalBlur(Display.getWidth()/4, Display.getHeight()/4);
 	}
 	
 	public static void doPostProcessing(int colourTexture){
 		start();
+	//	hBlur.render(colourTexture);
+	//	vBlur.render(hBlur.getOutputTexture());
 		contrastChanger.render(colourTexture);
 		end();
 	}
 	
 	public static void cleanUp(){
 		contrastChanger.cleanUp();
+		hBlur.cleanUp();
+		vBlur.cleanUp();
+		
 	}
 	
 	private static void start(){
