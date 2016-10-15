@@ -112,7 +112,7 @@ public class Fbo {
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
 		GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, outputFbo.width, outputFbo.height, 
 				GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
-		unbindFrameBuffer();
+		this.unbindFrameBuffer();
 	}
 	
 	public void resolveToScreen(){
@@ -121,7 +121,7 @@ public class Fbo {
 		GL11.glDrawBuffer(GL11.GL_BACK);
 		GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, Display.getWidth(), Display.getHeight(), 
 				GL11.GL_COLOR_BUFFER_BIT , GL11.GL_NEAREST);
-		unbindFrameBuffer();
+		this.unbindFrameBuffer();
 	}
 
 	/**
@@ -139,7 +139,6 @@ public class Fbo {
 		}else{
 			createTextureAttachment();
 		}
-		createTextureAttachment();
 		if (type == DEPTH_RENDER_BUFFER) {
 			createDepthBufferAttachment();
 		} else if (type == DEPTH_TEXTURE) {
@@ -195,7 +194,7 @@ public class Fbo {
 		colourBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colourBuffer);
 		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL11.GL_RGBA8, width, height);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT1, GL30.GL_RENDERBUFFER,
+		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER,
 				colourBuffer);
 	}
 	

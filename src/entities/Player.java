@@ -30,7 +30,7 @@ public class Player extends Entity {
 	public void move (Terrain terrain){
 		
 		if(isMoving){
-			/** SOCKET */
+			/** SOCKET *
 			
 			try {								//arrange your cpu usage
 			    Thread.sleep(8);                 //1000 milliseconds is one second. 
@@ -52,7 +52,7 @@ public class Player extends Entity {
 			}
 			
 			MainGameLoop.GSocket.socket.emit("position", pos);
-			/** END SOCKET **/
+			** END SOCKET **/
 		}
 		
 		
@@ -106,10 +106,4 @@ public class Player extends Entity {
 			jump();
 		}
 	}
-
-
-
-
-
-
 }

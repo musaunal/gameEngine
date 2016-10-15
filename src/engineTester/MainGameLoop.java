@@ -95,6 +95,13 @@ public class MainGameLoop {
 		TexturedModel bobble = new TexturedModel(OBJFileLoader.loadOBJ("pine", loader),
 				new ModelTexture(loader.loadTexture("pine")));
 		bobble.getTexture().setHasTransparency(true);
+		
+		TexturedModel chery = new TexturedModel(OBJFileLoader.loadOBJ("cherry", loader),
+				new ModelTexture(loader.loadTexture("cherry")));
+		chery.getTexture().setHasTransparency(true);
+		chery.getTexture().setShineDamper(10);
+		chery.getTexture().setReflectivity(0.5f);
+		chery.getTexture().setSpecularMap(loader.loadTexture("cherryS"));
 
 		Terrain terrain = new Terrain(1, 0, loader , texturePack, blendMap , "heightMap");
 		List<Terrain> terrains = new ArrayList<Terrain>();
@@ -143,7 +150,6 @@ public class MainGameLoop {
 				float x = random.nextFloat() * 1000 + 800;
 				float z = random.nextFloat() * 1000;
 				if ((x > 800 && x < 1600) && (z > 0 && z < 800)) {
-				
 					float y = terrain.getHeightOfTerrain(x, z);
 					if(y>0){
 						entities.add(new Entity(fern, 3, new Vector3f(x, y, z), 0,random.nextFloat() * 360, 0, 0.9f));
@@ -152,14 +158,22 @@ public class MainGameLoop {
 				}
 			}
 			if (i % 2 == 0) {
-
 				float x = random.nextFloat() * 1000 + 800;
 				float z = random.nextFloat() * 1000;
 				if ((x > 800 && x < 1600) && (z >0 && z < 800)) {
-
 					float y = terrain.getHeightOfTerrain(x, z);
 					if(y>0){
-					entities.add(new Entity(bobble, 1, new Vector3f(x, y, z), 0,random.nextFloat() * 360, 0, random.nextFloat() * 0.6f + 0.8f));
+					entities.add(new Entity(bobble, 1, new Vector3f(x, y, z), 0,random.nextFloat() * 360, 0, random.nextFloat() * 0.6f + 1.2f));
+					}
+				}
+			}
+			if (i % 2 == 0) {
+				float x = random.nextFloat() * 1000 + 800;
+				float z = random.nextFloat() * 1000;
+				if ((x > 800 && x < 1600) && (z >0 && z < 800)) {
+					float y = terrain.getHeightOfTerrain(x, z);
+					if(y>0){
+					entities.add(new Entity(chery, 1, new Vector3f(x+5, y, z+3), 0,random.nextFloat() * 360, 0, random.nextFloat() * 0.6f + 2.8f));	
 					}
 				}
 			}
@@ -210,8 +224,9 @@ public class MainGameLoop {
 		systemo.setScaleError(0.5f);
 		systemo.randomizeRotation();
 		
-		Fbo multisapleFbo = new Fbo(Display.getHeight(),Display.getHeight());
-		Fbo outputFbo = new Fbo(Display.getHeight(),Display.getHeight(), Fbo.DEPTH_TEXTURE);
+	//	Fbo fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
+		Fbo multisampleFbo = new Fbo(Display.getWidth(), Display.getHeight());
+		Fbo outputFbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		PostProcessing.init(loader);
 		
 		 //game loop
@@ -251,13 +266,13 @@ public class MainGameLoop {
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
 			
-			//multisapleFbo.bindFrameBuffer();
+			multisampleFbo.bindFrameBuffer();
 			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,new Vector4f(0, -1, 0 ,100000));
 			waterRenderer.render(waters, camera ,sun);
 			ParticleMaster.renderParticles(camera);
-			multisapleFbo.unbindFrameBuffer();
-			multisapleFbo.resolveToScreen();
-			//PostProcessing.doPostProcessing(outputFbo.getColourTexture());
+			multisampleFbo.unbindFrameBuffer();
+			multisampleFbo.resolveToFbo(outputFbo);
+			PostProcessing.doPostProcessing(outputFbo.getColourTexture());
 			
 			guiRenderer.render(guis);
 			TextMaster.render();
@@ -267,9 +282,10 @@ public class MainGameLoop {
 		
 		
 		//GSocket.socket.disconnect();
+		//fbo.cleanUp();
 		PostProcessing.cleanUp();
 		outputFbo.cleanUp();
-		multisapleFbo.cleanUp();
+		multisampleFbo.cleanUp();
 		ParticleMaster.cleanUp();
 		TextMaster.cleanUp();
 		buffers.cleanUp();

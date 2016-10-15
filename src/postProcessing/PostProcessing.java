@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import bloom.BrightFilter;
+import bloom.CombineFilter;
 import gaussianBlur.HorizontalBlur;
 import gaussianBlur.VerticalBlur;
 import models.RawModel;
@@ -18,6 +20,8 @@ public class PostProcessing {
 	private static ContrastChanger contrastChanger;
 	private static HorizontalBlur hBlur;
 	private static VerticalBlur vBlur;
+	private static BrightFilter brightFilter;
+	private static CombineFilter combineFilter;
 	
 	
 	public static void init(Loader loader){
@@ -25,13 +29,16 @@ public class PostProcessing {
 		contrastChanger = new ContrastChanger();
 		hBlur = new HorizontalBlur(Display.getWidth()/4, Display.getHeight()/4);   // ne kadar bölersen o kadar bulanýk
 		vBlur = new VerticalBlur(Display.getWidth()/4, Display.getHeight()/4);
+		brightFilter = new BrightFilter(Display.getWidth()/2, Display.getHeight()/2);
+		combineFilter = new CombineFilter();
 	}
 	
 	public static void doPostProcessing(int colourTexture){
 		start();
-	//	hBlur.render(colourTexture);
-	//	vBlur.render(hBlur.getOutputTexture());
-		contrastChanger.render(colourTexture);
+		brightFilter.render(colourTexture);
+		hBlur.render(brightFilter.getOutputTexture());
+		vBlur.render(hBlur.getOutputTexture());
+		combineFilter.render(colourTexture, vBlur.getOutputTexture());
 		end();
 	}
 	
@@ -39,7 +46,8 @@ public class PostProcessing {
 		contrastChanger.cleanUp();
 		hBlur.cleanUp();
 		vBlur.cleanUp();
-		
+		brightFilter.cleanUp();
+		combineFilter.cleanUp();
 	}
 	
 	private static void start(){
